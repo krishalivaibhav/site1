@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Name Letter</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: black;
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .envelope-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: 2;
+      transition: all 1.5s ease;
+      padding: 20px;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .envelope-wrapper.fade-out {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
+      pointer-events: none;
+    }
+
+    .envelope {
+      width: 220px;
+      height: 140px;
+      background: #ff6b6b;
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: all 0.5s ease;
+    }
+
+    .envelope::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 110px solid transparent;
+      border-right: 110px solid transparent;
+      border-bottom: 70px solid #ff5252;
+      transition: transform 1s ease;
+      transform-origin: top;
+    }
+
+    .opened .envelope::before {
+      transform: rotateX(-180deg);
+    }
+
+    .message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      text-align: center;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 1s ease;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 300px;
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    .sequence-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 50px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 1s ease;
+      align-items: center;
+    }
+
+    .sequence-container.show {
+      opacity: 1;
+    }
+
+    .sequence-text {
+      font-size: 48px;
+      text-align: center;
+      color: white;
+      padding: 30px 50px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 400px;
+      max-width: 600px;
+    }
+
+    .sequence-image {
+      width: 500px;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background video -->
+  <video id="bg-video" autoplay loop playsinline>
+    <source src="yourname-op.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Envelope trigger -->
+  <div class="envelope-wrapper" id="envelopeWrapper">
+    <div class="envelope"></div>
+  </div>
+
+  <!-- Initial Message -->
+  <div class="message" id="message">For you Aanu</div>
+
+  <!-- Sequence Container -->
+  <div class="sequence-container" id="sequenceContainer">
+    <div class="sequence-text" id="sequenceText"></div>
+    <img class="sequence-image" id="sequenceImage" src="" alt="Message Image">
+  </div>
+
+  <script>
+    const envelopeWrapper = document.getElementById('envelopeWrapper');
+    const message = document.getElementById('message');
+    const sequenceContainer = document.getElementById('sequenceContainer');
+    const sequenceText = document.getElementById('sequenceText');
+    const sequenceImage = document.getElementById('sequenceImage');
+    const video = document.getElementById('bg-video');
+
+    // Make sure video plays and is visible
+    video.style.display = 'block';
+    video.muted = false;
+
+    // Try to play video immediately
+    video.play().catch(err => {
+      console.log("Initial autoplay failed:", err);
+    });
+
+    // Add click event listener to the envelope
+    envelopeWrapper.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Envelope clicked');
+      
+      // Prevent multiple clicks
+      if (envelopeWrapper.classList.contains('opened')) return;
+      
+      envelopeWrapper.classList.add('opened');
+      setTimeout(() => {
+        envelopeWrapper.classList.add('fade-out');
+        message.classList.add('show');
+        
+        // Fade out message after 4 seconds (total 6 seconds with fade in/out)
+        setTimeout(() => {
+          message.classList.remove('show');
+        }, 4000);
+      }, 1000);
+      
+      // Ensure video plays on click
+      video.play().catch(err => {
+        console.log("Click play failed:", err);
+      });
+    });
+
+    // Sequence of messages to show after 28 seconds
+    const messages = [
+      "Baby you make me complete",
+      "The day I sent you that audio, best decision of my life",
+      "I know long distance is hard but we can do this babe",
+      "The best moment of my life when you said \"i love you\"",
+      "My cutie pie",
+      "You understand me more than anybody ever could",
+      "I wish I could see you everyday",
+      "I love how choti choti baat pe gali deti muhje",
+      "I love how you make me laugh (unfunny hai tu thodi tho)",
+      "I love the pretty little face of yours",
+      "I love that cute si smile",
+      "I love saying cringe things to you",
+      "I love being in love with you",
+      "Thanks for being there for me",
+      "Thanks for everything",
+      "I love you aanu❤️"
+    ];
+
+    let currentMessageIndex = 0;
+    let messageSequenceStarted = false;
+
+    // Function to show messages in sequence
+    function showNextMessage() {
+      if (currentMessageIndex < messages.length) {
+        sequenceText.textContent = messages[currentMessageIndex];
+        sequenceImage.src = `${currentMessageIndex + 1}.JPG`;
+        sequenceContainer.classList.add('show');
+        
+        setTimeout(() => {
+          sequenceContainer.classList.remove('show');
+          currentMessageIndex++;
+          
+          if (currentMessageIndex < messages.length) {
+            setTimeout(showNextMessage, 1000);
+          }
+        }, 4000);
+      }
+    }
+
+    // Check video time and start message sequence
+    video.addEventListener('timeupdate', () => {
+      if (video.currentTime >= 28 && !messageSequenceStarted) {
+        messageSequenceStarted = true;
+        setTimeout(showNextMessage, 1000);
+      }
+      
+      // Loop video at 1:48 (108 seconds)
+      if (video.currentTime >= 108) {
+        video.currentTime = 0;
+        video.play();
+        messageSequenceStarted = false;
+        currentMessageIndex = 0;
+      }
+    });
+
+    // Add error handling for video
+    video.addEventListener('error', (e) => {
+      console.error('Video error:', video.error);
+    });
+  </script>
+</body>
+</html>
